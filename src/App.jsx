@@ -31,6 +31,10 @@ const projects = [
         label: "IEEE Paper",
         href: "https://ieeexplore.ieee.org/document/11319007",
       },
+      {
+        label: "ETECOM Certificate",
+        href: `${import.meta.env.BASE_URL}etecom2025-certificate.pdf`,
+      },
     ],
   },
   {
