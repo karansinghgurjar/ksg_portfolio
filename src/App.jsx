@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const projects = [
   {
@@ -101,7 +101,6 @@ const experience = {
 
 export default function App() {
   const [isDark, setIsDark] = useState(false);
-  const [expandedProject, setExpandedProject] = useState(null);
   const logoSrc = `${import.meta.env.BASE_URL}logo.png`;
   const githubIcon = `${import.meta.env.BASE_URL}github.png`;
   const linkedinIcon = `${import.meta.env.BASE_URL}linkedin.png`;
@@ -240,59 +239,47 @@ export default function App() {
             </div>
           </div>
           <div className="mt-10 grid gap-6 md:grid-cols-6">
-            {projects.map((project, index) => {
-              const isExpanded = expandedProject === index;
-              return (
-                <article
-                  key={project.title}
-                  className={`card cursor-pointer ${project.gridClass}`}
-                  onClick={() => setExpandedProject(isExpanded ? null : index)}
-                >
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-semibold">{project.title}</h3>
-                    <span className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
-                      ▼
+            {projects.map((project) => (
+              <article
+                key={project.title}
+                className={`card ${project.gridClass}`}
+              >
+                <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">
+                  <span>{project.type}</span>
+                </div>
+                <h3 className="mt-4 text-xl font-bold">{project.title}</h3>
+                <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
+                  {project.description}
+                </p>
+                <ul className="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-300">
+                  {project.highlights.map((item) => (
+                    <li key={item}>- {item}</li>
+                  ))}
+                </ul>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {project.stack.map((item) => (
+                    <span key={item} className="tag">
+                      {item}
                     </span>
+                  ))}
+                </div>
+                {project.links.length > 0 && (
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    {project.links.map((link) => (
+                      <a
+                        key={link.href}
+                        className="btn-secondary"
+                        href={link.href}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {link.label}
+                      </a>
+                    ))}
                   </div>
-                  <div className={`overflow-hidden transition-all duration-300 ${isExpanded ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0'}`}>
-                    <div className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">
-                      {project.type}
-                    </div>
-                    <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
-                      {project.description}
-                    </p>
-                    <ul className="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                      {project.highlights.map((item) => (
-                        <li key={item}>- {item}</li>
-                      ))}
-                    </ul>
-                    <div className="mt-5 flex flex-wrap gap-2">
-                      {project.stack.map((item) => (
-                        <span key={item} className="tag">
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                    {project.links.length > 0 && (
-                      <div className="mt-6 flex flex-wrap gap-3">
-                        {project.links.map((link) => (
-                          <a
-                            key={link.href}
-                            className="btn-secondary"
-                            href={link.href}
-                            target="_blank"
-                            rel="noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {link.label}
-                          </a>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </article>
-              );
-            })}
+                )}
+              </article>
+            ))}
           </div>
         </section>
 
