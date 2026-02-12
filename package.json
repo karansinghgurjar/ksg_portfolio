@@ -10,7 +10,7 @@
     "build:clean": "powershell -ExecutionPolicy Bypass -File ./scripts/build-clean.ps1",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist -f"
   },
   "dependencies": {
     "react": "^18.3.1",
