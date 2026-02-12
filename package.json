@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build || npm run build:local",
+    "build:local": "powershell -ExecutionPolicy Bypass -File ./scripts/build-local.ps1",
+    "build:clean": "powershell -ExecutionPolicy Bypass -File ./scripts/build-clean.ps1",
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"

@@ -117,45 +117,45 @@ export default function App() {
   const year = useMemo(() => new Date().getFullYear(), []);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <div className="min-h-screen text-slate-900 dark:text-slate-100">
       <div className="pointer-events-none fixed inset-0 -z-10 bg-noise" />
-      <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6">
-        <a className="flex items-center gap-3 text-sm font-semibold tracking-wide" href="#top">
-          <img className="logo-circle" src={logoSrc} alt="Karan Singh Gurjar logo" />
-          <span>KSG</span>
-        </a>
-        <div className="hidden md:flex">
-          <nav className="nav-pill">
-            <a className="nav-link" href="#projects">
-              Projects
-            </a>
-            <a className="nav-link" href="#experience">
-              Experience
-            </a>
-            <a className="nav-link" href="#skills">
-              My Skills
-            </a>
-            <a className="nav-link" href="#contact">
-              Contact
-            </a>
-          </nav>
+      <header className="mx-auto w-full max-w-6xl px-4 py-5 sm:px-6">
+        <div className="header-top">
+          <a className="brand-link" href="#top">
+            <img className="logo-circle" src={logoSrc} alt="Karan Singh Gurjar logo" />
+            <span className="brand-mark">KSG</span>
+          </a>
+          <button
+            className="toggle-btn"
+            onClick={() => setIsDark((prev) => !prev)}
+            aria-label="Toggle theme"
+          >
+            {isDark ? "Light" : "Dark"}
+          </button>
         </div>
-        <button
-          className="toggle-btn"
-          onClick={() => setIsDark((prev) => !prev)}
-          aria-label="Toggle theme"
-        >
-          {isDark ? "Light" : "Dark"}
-        </button>
+        <nav className="nav-pill header-nav">
+          <a className="nav-link" href="#projects">
+            Projects
+          </a>
+          <a className="nav-link" href="#experience">
+            Experience
+          </a>
+          <a className="nav-link" href="#skills">
+            My Skills
+          </a>
+          <a className="nav-link" href="#contact">
+            Contact
+          </a>
+        </nav>
       </header>
 
-      <main id="top" className="mx-auto w-full max-w-6xl px-6">
+      <main id="top" className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <section className="grid items-center gap-10 py-16 md:grid-cols-[1.2fr_0.8fr]">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-500 dark:text-slate-400">
               Portfolio 2026
             </p>
-            <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-6xl">
+            <h1 className="mt-4 text-[clamp(2rem,6vw,3.8rem)] font-bold leading-tight">
               Karan Singh Gurjar
             </h1>
             <p className="mt-4 text-lg text-slate-600 dark:text-slate-300">
@@ -208,7 +208,7 @@ export default function App() {
           <div className="relative">
             <div className="absolute inset-0 rounded-3xl border border-white/10 dark:border-white/10" />
             <div className="relative rounded-3xl border border-slate-200/60 bg-white/70 p-6 backdrop-blur dark:border-white/10 dark:bg-white/5">
-              <h2 className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">
+              <h2 className="text-sm font-bold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">
                 Focus
               </h2>
               <p className="mt-3 text-base text-slate-600 dark:text-slate-300">
@@ -239,7 +239,7 @@ export default function App() {
         <section id="projects" className="py-16">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <h2 className="text-2xl font-semibold md:text-3xl">Projects</h2>
+              <h2 className="text-2xl font-bold md:text-3xl">Projects</h2>
               <p className="mt-2 text-slate-600 dark:text-slate-300">
                 Research-driven builds, secure systems, and product-ready
                 deliverables.
@@ -255,7 +255,7 @@ export default function App() {
                 <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">
                   <span>{project.type}</span>
                 </div>
-                <h3 className="mt-4 text-xl font-semibold">{project.title}</h3>
+                <h3 className="mt-4 text-xl font-bold">{project.title}</h3>
                 <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
                   {project.description}
                 </p>
@@ -294,9 +294,9 @@ export default function App() {
         <section id="experience" className="py-16">
           <div className="grid gap-6 md:grid-cols-[2fr_1fr]">
             <div className="card">
-              <h2 className="text-2xl font-semibold md:text-3xl">Experience</h2>
+              <h2 className="text-2xl font-bold md:text-3xl">Experience</h2>
               <div className="mt-6">
-                <h3 className="text-lg font-semibold">{experience.role}</h3>
+                <h3 className="text-lg font-bold">{experience.role}</h3>
                 <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
                   {experience.company} - {experience.location}
                 </p>
@@ -311,7 +311,7 @@ export default function App() {
               </div>
             </div>
             <div className="card">
-              <h3 className="text-lg font-semibold">Highlights</h3>
+              <h3 className="text-lg font-bold">Highlights</h3>
               <ul className="mt-4 space-y-3 text-sm text-slate-600 dark:text-slate-300">
                 {highlights.map((item) => (
                   <li key={item}>- {item}</li>
@@ -383,7 +383,7 @@ export default function App() {
 
         <section id="contact" className="py-16">
           <div className="card">
-            <h2 className="text-2xl font-semibold md:text-3xl">Contact</h2>
+            <h2 className="text-2xl font-bold md:text-3xl">Contact</h2>
             <p className="mt-2 text-slate-600 dark:text-slate-300">
               Interested in full-stack or ML collaborations? Reach out.
             </p>
