@@ -401,9 +401,71 @@ export default function App() {
         </section>
       </main>
 
-      <footer className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-10 text-xs text-slate-500 dark:text-slate-400">
-        <span>(c) {year} Karan Singh Gurjar</span>
-        <span>Built with React + Tailwind</span>
+      <footer className="border-t border-slate-200 dark:border-white/10 mt-16">
+        <div className="mx-auto w-full max-w-6xl px-6 py-12">
+          <div className="grid gap-8 md:grid-cols-3">
+            {/* Brand & Description */}
+            <div>
+              <a className="flex items-center gap-3 text-lg font-bold" href="#top">
+                <img className="logo-circle" src={logoSrc} alt="Karan Singh Gurjar logo" />
+                <span>KSG</span>
+              </a>
+              <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">
+                Full-stack developer focused on building reliable, intuitive experiences across frontend and backend.
+              </p>
+            </div>
+
+            {/* Quick Links */}
+            <div>
+              <h4 className="font-bold text-slate-900 dark:text-white">Quick Links</h4>
+              <nav className="mt-4 flex flex-col gap-2 text-sm">
+                <a className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition" href="#projects">Projects</a>
+                <a className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition" href="#experience">Experience</a>
+                <a className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition" href="#skills">Skills</a>
+                <a className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition" href="#contact">Contact</a>
+              </nav>
+            </div>
+
+            {/* Contact Info */}
+            <div>
+              <h4 className="font-bold text-slate-900 dark:text-white">Get in Touch</h4>
+              <div className="mt-4 space-y-3 text-sm text-slate-600 dark:text-slate-400">
+                <p className="flex items-center gap-2">
+                  <span>📍</span> Bengaluru, Karnataka
+                </p>
+                <a className="flex items-center gap-2 hover:text-slate-900 dark:hover:text-white transition" href="mailto:karansingha2222@gmail.com">
+                  <span>✉️</span> karansingha2222@gmail.com
+                </a>
+              </div>
+              <div className="mt-4 flex gap-3">
+                <a
+                  className="icon-btn"
+                  href="https://github.com/karansinghgurjar"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="GitHub"
+                >
+                  <img src={githubIcon} alt="GitHub" />
+                </a>
+                <a
+                  className="icon-btn"
+                  href="https://www.linkedin.com/in/karan-singh-gurjar-052b30197/"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="LinkedIn"
+                >
+                  <img src={linkedinIcon} alt="LinkedIn" />
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-slate-200 pt-6 text-xs text-slate-500 dark:border-white/10 dark:text-slate-400 md:flex-row">
+            <span>© {year} Karan Singh Gurjar. All rights reserved.</span>
+            <span>Built with React + Tailwind CSS</span>
+          </div>
+        </div>
       </footer>
     </div>
   );
