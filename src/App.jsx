@@ -15,15 +15,16 @@ const projects = [
     links: [],
   },
   {
-    title: "Bird Sound Classification + Geospatial Visualization",
+    title: "Automated Avian Vocalization Classification and Geospatial Visualization",
     type: "Machine Learning Project",
     description:
-      "ML system classifying bird species from audio with location visualization.",
-    stack: ["Python", "ResNet-18", "Librosa"],
+      "Web-based biodiversity monitoring system that classifies bird species from .wav audio and shows species images plus interactive distribution maps.",
+    stack: ["Python", "PyTorch", "ResNet-18", "Librosa", "Flask", "Folium"],
     gridClass: "md:col-span-3 md:row-span-2",
     highlights: [
-      "Trained on 22k samples, achieved 53% accuracy.",
-      "IEEE ETECOM 2025 paper accepted.",
+      "Built tri-modal pipeline using Xeno-Canto audio, Google Images, and eBird/Xeno-Canto geolocation metadata for 1,266 Indian bird species.",
+      "Reported results: Top-1 31.99%, Top-5 51.72%, Precision 0.32, Recall 0.30, F1 0.29.",
+      "Published in IEEE ETECOM 2025 (DOI: 10.1109/ETECOM66111.2025.11319007).",
     ],
     links: [
       {
@@ -83,7 +84,7 @@ const skillCloud = [
 
 const highlights = [
   "Full-stack web development internship (6 months).",
-  "IEEE ETECOM 2025 paper presenter (AI/ML & Business Analytics).",
+  "Published IEEE ETECOM 2025 paper on automated avian vocalization classification and geospatial biodiversity monitoring.",
   "Hackathon participant: MCP 1st Birthday, Hugging Face.",
 ];
 
@@ -161,7 +162,8 @@ export default function App() {
             <p className="mt-4 text-lg text-slate-600 dark:text-slate-300">
               Junior full-stack developer focused on reliable, intuitive
               experiences across frontend and backend, with a clear path toward
-              cross-platform apps.
+              cross-platform apps, and applied ML systems for biodiversity
+              monitoring.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <a
@@ -206,11 +208,11 @@ export default function App() {
               <p className="mt-3 text-base text-slate-600 dark:text-slate-300">
                 Designing secure, scalable, and intelligent systems that bridge
                 machine learning research with production-grade engineering. My
-                current work centers on task-aware multimodal remote sensing,
-                including SAR-to-RGB colorization using CNNs, Transformers, and
-                diffusion-based generative models. I build end-to-end ML systems
-                with a strong emphasis on explainability, robust data pipelines,
-                and real-world deployment.
+                recent work centers on avian vocalization classification with
+                interactive geospatial visualization for biodiversity monitoring,
+                alongside broader multimodal ML research. I build end-to-end ML
+                systems with a strong emphasis on explainability, robust data
+                pipelines, and real-world deployment.
               </p>
               <div className="mt-6 grid gap-3 text-sm text-slate-600 dark:text-slate-300">
                 <span>Frontend: React, motion-rich and accessible UI design</span>
@@ -220,8 +222,8 @@ export default function App() {
                 </span>
                 <span>
                   Machine Learning &amp; Research: CNNs, Transformers, diffusion
-                  models, task-aware learning, SAR &amp; RGB satellite imagery,
-                  audio and behavioral biometrics
+                  models, task-aware learning, bioacoustics, geospatial
+                  visualization, and behavioral biometrics
                 </span>
               </div>
             </div>
@@ -233,8 +235,8 @@ export default function App() {
             <div>
               <h2 className="text-2xl font-bold md:text-3xl">Projects</h2>
               <p className="mt-2 text-slate-600 dark:text-slate-300">
-                Research-driven builds, secure systems, and product-ready
-                deliverables.
+                Biodiversity-focused bioacoustics research, secure systems, and
+                product-ready deliverables.
               </p>
             </div>
           </div>
