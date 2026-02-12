@@ -18,13 +18,13 @@ const projects = [
     title: "Automated Avian Vocalization Classification and Geospatial Visualization",
     type: "Machine Learning Project",
     description:
-      "Web-based biodiversity monitoring system that classifies bird species from .wav audio and shows species images plus interactive distribution maps.",
+      "End-to-end ML pipeline to classify bird species from audio recordings, with visual and geospatial context for biodiversity monitoring.",
     stack: ["Python", "PyTorch", "ResNet-18", "Librosa", "Flask", "Folium"],
     gridClass: "md:col-span-3 md:row-span-2",
     highlights: [
-      "Built tri-modal pipeline using Xeno-Canto audio, Google Images, and eBird/Xeno-Canto geolocation metadata for 1,266 Indian bird species.",
-      "Reported results: Top-1 31.99%, Top-5 51.72%, Precision 0.32, Recall 0.30, F1 0.29.",
-      "Published in IEEE ETECOM 2025 (DOI: 10.1109/ETECOM66111.2025.11319007).",
+      "Performed audio preprocessing and trained a ResNet-18 CNN on 22,000 samples.",
+      "Achieved 53% multi-class classification accuracy and analyzed model limitations.",
+      "Presented at IEEE ETECOM 2025 (AI, ML & Business Analytics track).",
     ],
     links: [
       {
@@ -88,8 +88,8 @@ const skillCloud = [
 
 const highlights = [
   "Full-stack web development internship (6 months).",
-  "Published IEEE ETECOM 2025 paper on automated avian vocalization classification and geospatial biodiversity monitoring.",
-  "Hackathon participant: MCP 1st Birthday, Hugging Face.",
+  "Presenter, IEEE ETECOM 2025 (AI, ML & Business Analytics).",
+  "Hackathon participant: MCP 1st Birthday (Gradio + Anthropic), Hugging Face.",
 ];
 
 const experience = {
@@ -164,10 +164,9 @@ export default function App() {
               Karan Singh Gurjar
             </h1>
             <p className="mt-4 text-lg text-slate-600 dark:text-slate-300">
-              Junior full-stack developer focused on reliable, intuitive
-              experiences across frontend and backend, with a clear path toward
-              cross-platform apps, and applied ML systems for biodiversity
-              monitoring.
+              Postgraduate Computer Science student with practical experience in
+              machine learning projects, full-stack development, and applied
+              research, focused on building reliable and explainable systems.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <a
@@ -211,12 +210,10 @@ export default function App() {
               </h2>
               <p className="mt-3 text-base text-slate-600 dark:text-slate-300">
                 Designing secure, scalable, and intelligent systems that bridge
-                machine learning research with production-grade engineering. My
-                recent work centers on avian vocalization classification with
-                interactive geospatial visualization for biodiversity monitoring,
-                alongside broader multimodal ML research. I build end-to-end ML
-                systems with a strong emphasis on explainability, robust data
-                pipelines, and real-world deployment.
+                machine learning research with production-grade engineering.
+                Current work includes CNN-based audio classification, API-driven
+                applications, and practical deployment-focused development across
+                web and ML systems.
               </p>
               <div className="mt-6 grid gap-3 text-sm text-slate-600 dark:text-slate-300">
                 <span>Frontend: React, motion-rich and accessible UI design</span>
@@ -226,7 +223,7 @@ export default function App() {
                 </span>
                 <span>
                   Machine Learning &amp; Research: CNNs, Transformers, diffusion
-                  models, task-aware learning, bioacoustics, geospatial
+                  models, model evaluation, bioacoustics, geospatial
                   visualization, and behavioral biometrics
                 </span>
               </div>
