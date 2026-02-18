@@ -24,7 +24,7 @@ const projects = [
     highlights: [
       "Performed audio preprocessing and trained a ResNet-18 CNN on 22,000 samples.",
       "Achieved 53% multi-class classification accuracy and analyzed model limitations.",
-      "Presented at IEEE ETECOM 2025 (AI, ML & Business Analytics track).",
+      "Published and presented at IEEE ETECOM 2025 (AI, ML & Business Analytics track).",
     ],
     links: [
       {
@@ -66,7 +66,8 @@ const skillTags = [
   "PostgreSQL",
   "MySQL",
   "Git",
-  "Docker (basic)",
+  "Docker",
+  "Kubernetes",
   "Linux",
 ];
 
@@ -88,7 +89,7 @@ const skillCloud = [
 
 const highlights = [
   "Full-stack web development internship (6 months).",
-  "Presenter, IEEE ETECOM 2025 (AI, ML & Business Analytics).",
+  "Published IEEE ETECOM 2025 Bird Sound Classification paper and presented it (AI, ML & Business Analytics).",
   "Hackathon participant: MCP 1st Birthday (Gradio + Anthropic), Hugging Face.",
 ];
 
@@ -111,8 +112,19 @@ export default function App() {
   const linkedinIcon = `${import.meta.env.BASE_URL}linkedin.png`;
 
   useEffect(() => {
-    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)");
-    setIsDark(prefersDark?.matches ?? false);
+    const mediaQuery = window.matchMedia?.("(prefers-color-scheme: dark)");
+    if (!mediaQuery) return undefined;
+
+    const syncWithSystemTheme = (event) => {
+      setIsDark(event.matches);
+    };
+
+    setIsDark(mediaQuery.matches);
+    mediaQuery.addEventListener("change", syncWithSystemTheme);
+
+    return () => {
+      mediaQuery.removeEventListener("change", syncWithSystemTheme);
+    };
   }, []);
 
   useEffect(() => {
