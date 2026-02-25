@@ -4,6 +4,8 @@ const projects = [
   {
     title: "Real-time Behavioral Biometric Authentication App",
     type: "Android Application",
+    metric: "Biometric UX",
+    thumbnail: "Behavioral Auth",
     description:
       "Android app using keystroke dynamics for real-time user authentication.",
     stack: ["Java", "SQLite", "XML"],
@@ -12,11 +14,16 @@ const projects = [
       "Designed intuitive UI for registration and authentication.",
       "Built data capture and storage for typing behavior.",
     ],
-    links: [],
+    links: {
+      live: "",
+      code: "",
+    },
   },
   {
     title: "Automated Avian Vocalization Classification and Geospatial Visualization",
     type: "Machine Learning Project",
+    metric: "53% Accuracy",
+    thumbnail: "Bioacoustics ML",
     description:
       "End-to-end ML pipeline to classify bird species from audio recordings, with visual and geospatial context for biodiversity monitoring.",
     stack: ["Python", "PyTorch", "ResNet-18", "Librosa", "Flask", "Folium"],
@@ -26,31 +33,25 @@ const projects = [
       "Achieved 53% multi-class classification accuracy and analyzed model limitations.",
       "Published and presented at IEEE ETECOM 2025 (AI, ML & Business Analytics track).",
     ],
-    links: [
-      {
-        label: "IEEE Paper",
-        href: "https://ieeexplore.ieee.org/document/11319007",
-      },
-      {
-        label: "ETECOM Certificate",
-        href: `${import.meta.env.BASE_URL}etecom2025-certificate.pdf`,
-      },
-    ],
+    links: {
+      live: "https://ieeexplore.ieee.org/document/11319007",
+      code: "",
+    },
   },
   {
     title: "Vault Box Web App",
     type: "Web Application",
+    metric: "Deployed App",
+    thumbnail: "Secure Vault",
     description:
       "Secure web app to store sensitive information with email-based auth.",
     stack: ["React.js", "Next.js", "PostgreSQL", "Supabase", "Vercel"],
     gridClass: "md:col-span-3",
     highlights: ["End-to-end auth and deployed to Vercel."],
-    links: [
-      {
-        label: "Live Demo",
-        href: "https://vercel.com/karansingha2222-3708s-projects/v0-vault-box-project",
-      },
-    ],
+    links: {
+      live: "https://vercel.com/karansingha2222-3708s-projects/v0-vault-box-project",
+      code: "",
+    },
   },
 ];
 
@@ -105,38 +106,308 @@ const experience = {
   ],
 };
 
+const THEME_KEY = "ksg_theme_preference";
+const VLOG_KEY = "ksg_vlog_projects";
+const getRouteFromHash = () => (window.location.hash.startsWith("#/vlog") ? "vlog" : "portfolio");
+
 export default function App() {
+  const [route, setRoute] = useState(getRouteFromHash);
+  const [themeMode, setThemeMode] = useState("system");
   const [isDark, setIsDark] = useState(false);
+  const [activeSection, setActiveSection] = useState("top");
+  const [vlogProjects, setVlogProjects] = useState([]);
+  const [selectedProjectId, setSelectedProjectId] = useState("");
+  const [projectName, setProjectName] = useState("");
+  const [projectDescription, setProjectDescription] = useState("");
+  const [entryTitle, setEntryTitle] = useState("");
+  const [entryContent, setEntryContent] = useState("");
   const logoSrc = `${import.meta.env.BASE_URL}logo.png`;
+  const heroPhotoSrc = `${import.meta.env.BASE_URL}logo.jpg`;
   const githubIcon = `${import.meta.env.BASE_URL}github.png`;
   const linkedinIcon = `${import.meta.env.BASE_URL}linkedin.png`;
+
+  useEffect(() => {
+    const onHashChange = () => setRoute(getRouteFromHash());
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem(VLOG_KEY);
+    if (!saved) return;
+    try {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) {
+        setVlogProjects(parsed);
+        if (parsed.length > 0) {
+          setSelectedProjectId(parsed[0].id);
+        }
+      }
+    } catch {
+      setVlogProjects([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem(VLOG_KEY, JSON.stringify(vlogProjects));
+  }, [vlogProjects]);
+
+  useEffect(() => {
+    const storedPreference = window.localStorage.getItem(THEME_KEY);
+    const initialMode =
+      storedPreference === "light" || storedPreference === "dark" || storedPreference === "system"
+        ? storedPreference
+        : "system";
+    setThemeMode(initialMode);
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia?.("(prefers-color-scheme: dark)");
+    if (!mediaQuery) return;
+
+    window.localStorage.setItem(THEME_KEY, themeMode);
+    setIsDark(themeMode === "system" ? mediaQuery.matches : themeMode === "dark");
+  }, [themeMode]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia?.("(prefers-color-scheme: dark)");
     if (!mediaQuery) return undefined;
 
     const syncWithSystemTheme = (event) => {
-      setIsDark(event.matches);
+      if (themeMode === "system") {
+        setIsDark(event.matches);
+      }
     };
-
-    setIsDark(mediaQuery.matches);
     mediaQuery.addEventListener("change", syncWithSystemTheme);
+    return () => mediaQuery.removeEventListener("change", syncWithSystemTheme);
+  }, [themeMode]);
+
+  useEffect(() => {
+    document.documentElement.classList.add("theme-transition");
+    document.documentElement.classList.toggle("dark", isDark);
+    const timer = window.setTimeout(() => {
+      document.documentElement.classList.remove("theme-transition");
+    }, 220);
+
+    return () => window.clearTimeout(timer);
+  }, [isDark]);
+
+  useEffect(() => {
+    const revealTargets = document.querySelectorAll(".reveal");
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+    revealTargets.forEach((node) => revealObserver.observe(node));
+
+    const sections = document.querySelectorAll("main section[id]");
+    const sectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: "-40% 0px -45% 0px", threshold: 0.1 }
+    );
+    sections.forEach((node) => sectionObserver.observe(node));
 
     return () => {
-      mediaQuery.removeEventListener("change", syncWithSystemTheme);
+      revealObserver.disconnect();
+      sectionObserver.disconnect();
     };
   }, []);
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", isDark);
-  }, [isDark]);
-
   const year = useMemo(() => new Date().getFullYear(), []);
+  const selectedProject = useMemo(
+    () => vlogProjects.find((project) => project.id === selectedProjectId) ?? null,
+    [vlogProjects, selectedProjectId]
+  );
+
+  const createVlogProject = (event) => {
+    event.preventDefault();
+    const name = projectName.trim();
+    if (!name) return;
+
+    const newProject = {
+      id: `project_${Date.now()}`,
+      name,
+      description: projectDescription.trim(),
+      entries: [],
+      createdAt: new Date().toISOString(),
+    };
+
+    setVlogProjects((prev) => [newProject, ...prev]);
+    setSelectedProjectId(newProject.id);
+    setProjectName("");
+    setProjectDescription("");
+  };
+
+  const addVlogEntry = (event) => {
+    event.preventDefault();
+    if (!selectedProjectId) return;
+    const title = entryTitle.trim();
+    const content = entryContent.trim();
+    if (!title || !content) return;
+
+    const newEntry = {
+      id: `entry_${Date.now()}`,
+      title,
+      content,
+      createdAt: new Date().toISOString(),
+    };
+
+    setVlogProjects((prev) =>
+      prev.map((project) =>
+        project.id === selectedProjectId
+          ? { ...project, entries: [newEntry, ...project.entries] }
+          : project
+      )
+    );
+    setEntryTitle("");
+    setEntryContent("");
+  };
+
+  if (route === "vlog") {
+    return (
+      <div className="min-h-screen text-slate-900 dark:text-slate-100">
+        <div className="pointer-events-none fixed inset-0 -z-10 bg-noise" />
+        <header className="site-header mx-auto w-full max-w-6xl px-4 py-5 sm:px-6">
+          <div className="header-top">
+            <a className="brand-link" href="#top">
+              <img className="logo-circle" src={logoSrc} alt="Karan Singh Gurjar logo" />
+              <span className="brand-mark">KSG</span>
+            </a>
+            <button
+              className="toggle-btn"
+              onClick={() =>
+                setThemeMode((prev) =>
+                  prev === "system" ? "dark" : prev === "dark" ? "light" : "system"
+                )
+              }
+              aria-label="Toggle theme"
+            >
+              {themeMode === "system" ? "Auto" : themeMode === "dark" ? "Dark" : "Light"}
+            </button>
+          </div>
+        </header>
+
+        <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
+          <div className="mb-6 flex items-center justify-between gap-3">
+            <h1 className="text-3xl font-bold md:text-4xl">Vlog Projects</h1>
+            <a className="btn-secondary" href="#/">
+              Back to Portfolio
+            </a>
+          </div>
+
+          <section className="vlog-layout">
+            <div className="card">
+              <h2 className="text-lg font-bold">Create Project</h2>
+              <form className="mt-4 space-y-3" onSubmit={createVlogProject}>
+                <input
+                  className="vlog-input"
+                  placeholder="Project name"
+                  value={projectName}
+                  onChange={(e) => setProjectName(e.target.value)}
+                />
+                <textarea
+                  className="vlog-input min-h-[84px]"
+                  placeholder="Project description (optional)"
+                  value={projectDescription}
+                  onChange={(e) => setProjectDescription(e.target.value)}
+                />
+                <button className="btn-primary" type="submit">
+                  Create Project
+                </button>
+              </form>
+
+              <h3 className="mt-8 text-sm font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                Your Projects
+              </h3>
+              <div className="mt-3 space-y-2">
+                {vlogProjects.map((project) => (
+                  <button
+                    key={project.id}
+                    type="button"
+                    className={`vlog-project-item ${project.id === selectedProjectId ? "is-active" : ""}`}
+                    onClick={() => setSelectedProjectId(project.id)}
+                  >
+                    <span className="block text-sm font-semibold">{project.name}</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">
+                      {project.entries.length} vlog entries
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="card">
+              <h2 className="text-lg font-bold">
+                {selectedProject ? `${selectedProject.name} - Vlog Entries` : "Select a project"}
+              </h2>
+              {selectedProject && (
+                <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                  {selectedProject.description || "No description added yet."}
+                </p>
+              )}
+
+              <form className="mt-5 space-y-3" onSubmit={addVlogEntry}>
+                <input
+                  className="vlog-input"
+                  placeholder="Vlog title"
+                  value={entryTitle}
+                  onChange={(e) => setEntryTitle(e.target.value)}
+                  disabled={!selectedProject}
+                />
+                <textarea
+                  className="vlog-input min-h-[120px]"
+                  placeholder="Write your vlog content..."
+                  value={entryContent}
+                  onChange={(e) => setEntryContent(e.target.value)}
+                  disabled={!selectedProject}
+                />
+                <button className="btn-primary" type="submit" disabled={!selectedProject}>
+                  Add Vlog Data
+                </button>
+              </form>
+
+              <div className="mt-7 space-y-4">
+                {selectedProject?.entries.length ? (
+                  selectedProject.entries.map((entry) => (
+                    <article key={entry.id} className="vlog-entry">
+                      <h3 className="text-base font-bold">{entry.title}</h3>
+                      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                        {new Date(entry.createdAt).toLocaleString()}
+                      </p>
+                      <p className="mt-3 whitespace-pre-wrap text-sm text-slate-700 dark:text-slate-300">
+                        {entry.content}
+                      </p>
+                    </article>
+                  ))
+                ) : (
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    No vlog data yet. Create a project and add your first entry.
+                  </p>
+                )}
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen text-slate-900 dark:text-slate-100">
       <div className="pointer-events-none fixed inset-0 -z-10 bg-noise" />
-      <header className="mx-auto w-full max-w-6xl px-4 py-5 sm:px-6">
+      <header className="site-header mx-auto w-full max-w-6xl px-4 py-5 sm:px-6">
         <div className="header-top">
           <a className="brand-link" href="#top">
             <img className="logo-circle" src={logoSrc} alt="Karan Singh Gurjar logo" />
@@ -144,43 +415,60 @@ export default function App() {
           </a>
           <button
             className="toggle-btn"
-            onClick={() => setIsDark((prev) => !prev)}
+            onClick={() =>
+              setThemeMode((prev) =>
+                prev === "system" ? "dark" : prev === "dark" ? "light" : "system"
+              )
+            }
             aria-label="Toggle theme"
           >
-            {isDark ? "Light" : "Dark"}
+            {themeMode === "system" ? "Auto" : themeMode === "dark" ? "Dark" : "Light"}
           </button>
         </div>
         <nav className="nav-pill header-nav">
-          <a className="nav-link" href="#projects">
+          <a className={`nav-link ${activeSection === "projects" ? "is-active" : ""}`} href="#projects">
             Projects
           </a>
-          <a className="nav-link" href="#experience">
+          <a
+            className={`nav-link ${activeSection === "experience" ? "is-active" : ""}`}
+            href="#experience"
+          >
             Experience
           </a>
-          <a className="nav-link" href="#skills">
+          <a className={`nav-link ${activeSection === "skills" ? "is-active" : ""}`} href="#skills">
             My Skills
           </a>
-          <a className="nav-link" href="#contact">
+          <a className={`nav-link ${activeSection === "contact" ? "is-active" : ""}`} href="#contact">
             Contact
+          </a>
+          <a className="nav-link" href="#/vlog">
+            Vlog
           </a>
         </nav>
       </header>
 
       <main id="top" className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <section className="grid items-center gap-10 py-16 md:grid-cols-[1.2fr_0.8fr]">
-          <div>
+          <div className="reveal">
             <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-500 dark:text-slate-400">
               Portfolio 2026
             </p>
             <h1 className="mt-4 text-[clamp(2rem,6vw,3.8rem)] font-bold leading-tight">
               Karan Singh Gurjar
             </h1>
+            <p className="hero-tagline">Building dependable web and ML products that ship to production.</p>
             <p className="mt-4 text-lg text-slate-600 dark:text-slate-300">
               Postgraduate Computer Science student with practical experience in
               machine learning projects, full-stack development, and applied
               research, focused on building reliable and explainable systems.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="hero-cta mt-8 flex flex-wrap items-center gap-3">
+              <a className="btn-primary" href="#projects">
+                View Projects
+              </a>
+              <a className="btn-secondary" href="#contact">
+                Contact Me
+              </a>
               <a
                 className="btn-secondary btn-resume"
                 href="https://drive.google.com/file/d/1nUrgU3CI-qajX5lH9aHvzdMwXf5WxReg/view?usp=sharing"
@@ -214,9 +502,16 @@ export default function App() {
               <span>AI + Web development</span>
             </div>
           </div>
-          <div className="relative">
+          <div className="relative reveal">
             <div className="absolute inset-0 rounded-3xl border border-white/10 dark:border-white/10" />
             <div className="relative rounded-3xl border border-slate-200/60 bg-white/70 p-6 backdrop-blur dark:border-white/10 dark:bg-white/5">
+              <div className="hero-identity">
+                <img src={heroPhotoSrc} alt="Karan Singh Gurjar portrait" className="hero-photo" />
+                <div>
+                  <p className="hero-photo-label">ML + Full Stack</p>
+                  <p className="hero-photo-sub">Open to full-time opportunities</p>
+                </div>
+              </div>
               <h2 className="text-sm font-bold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">
                 Focus
               </h2>
@@ -243,7 +538,7 @@ export default function App() {
           </div>
         </section>
 
-        <section id="projects" className="py-16">
+        <section id="projects" className="py-16 reveal">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <h2 className="text-2xl font-bold md:text-3xl">Projects</h2>
@@ -255,12 +550,13 @@ export default function App() {
           </div>
           <div className="mt-10 grid gap-6 md:grid-cols-6">
             {projects.map((project) => (
-              <article
-                key={project.title}
-                className={`card ${project.gridClass}`}
-              >
+              <article key={project.title} className={`card reveal ${project.gridClass}`}>
                 <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">
                   <span>{project.type}</span>
+                  <span className="project-metric">{project.metric}</span>
+                </div>
+                <div className="project-thumb" aria-hidden="true">
+                  {project.thumbnail}
                 </div>
                 <h3 className="mt-4 text-xl font-bold">{project.title}</h3>
                 <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
@@ -278,27 +574,32 @@ export default function App() {
                     </span>
                   ))}
                 </div>
-                {project.links.length > 0 && (
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    {project.links.map((link) => (
-                      <a
-                        key={link.href}
-                        className="btn-secondary"
-                        href={link.href}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {link.label}
-                      </a>
-                    ))}
-                  </div>
-                )}
+                <div className="mt-6 flex flex-wrap gap-3">
+                  {project.links.live ? (
+                    <a className="btn-secondary" href={project.links.live} target="_blank" rel="noreferrer">
+                      Live
+                    </a>
+                  ) : (
+                    <span className="btn-secondary btn-disabled" aria-disabled="true">
+                      Live
+                    </span>
+                  )}
+                  {project.links.code ? (
+                    <a className="btn-secondary" href={project.links.code} target="_blank" rel="noreferrer">
+                      Code
+                    </a>
+                  ) : (
+                    <span className="btn-secondary btn-disabled" aria-disabled="true">
+                      Code
+                    </span>
+                  )}
+                </div>
               </article>
             ))}
           </div>
         </section>
 
-        <section id="experience" className="py-16">
+        <section id="experience" className="py-16 reveal">
           <div className="grid gap-6 md:grid-cols-[2fr_1fr]">
             <div className="card">
               <h2 className="text-2xl font-bold md:text-3xl">Experience</h2>
@@ -328,7 +629,7 @@ export default function App() {
           </div>
         </section>
 
-        <section id="skills" className="py-20">
+        <section id="skills" className="py-20 reveal">
           <div className="skills-shell">
             <div className="skills-copy">
               <h2 className="skills-title">
@@ -388,7 +689,7 @@ export default function App() {
           </div>
         </section>
 
-        <section id="contact" className="py-16">
+        <section id="contact" className="py-16 reveal">
           <div className="card">
             <h2 className="text-2xl font-bold md:text-3xl">Contact</h2>
             <p className="mt-2 text-slate-600 dark:text-slate-300">
