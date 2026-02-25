@@ -108,7 +108,18 @@ const experience = {
 
 const THEME_KEY = "ksg_theme_preference";
 const VLOG_KEY = "ksg_vlog_projects";
-const getRouteFromHash = () => (window.location.hash.startsWith("#/vlog") ? "vlog" : "portfolio");
+const getRouteFromHash = () => {
+  const hash = window.location.hash || "#/";
+  if (hash.startsWith("#/vlog/")) {
+    return {
+      page: "vlogProject",
+      projectId: decodeURIComponent(hash.replace("#/vlog/", "").trim()),
+    };
+  }
+  if (hash.startsWith("#/vlog")) return { page: "vlog", projectId: "" };
+  if (hash.startsWith("#/projects")) return { page: "projects", projectId: "" };
+  return { page: "portfolio", projectId: "" };
+};
 
 export default function App() {
   const [route, setRoute] = useState(getRouteFromHash);
@@ -121,6 +132,7 @@ export default function App() {
   const [projectDescription, setProjectDescription] = useState("");
   const [entryTitle, setEntryTitle] = useState("");
   const [entryContent, setEntryContent] = useState("");
+  const [entryScreenshots, setEntryScreenshots] = useState([]);
   const logoSrc = `${import.meta.env.BASE_URL}logo.png`;
   const heroPhotoSrc = `${import.meta.env.BASE_URL}logo.jpg`;
   const githubIcon = `${import.meta.env.BASE_URL}github.png`;
@@ -223,12 +235,69 @@ export default function App() {
       revealObserver.disconnect();
       sectionObserver.disconnect();
     };
-  }, []);
+  }, [route.page, route.projectId]);
+
+  useEffect(() => {
+    if (route.page !== "portfolio") {
+      document.querySelectorAll(".reveal").forEach((node) => node.classList.add("is-visible"));
+    }
+  }, [route.page]);
 
   const year = useMemo(() => new Date().getFullYear(), []);
+  const currentVlogProjectId = route.page === "vlogProject" ? route.projectId : selectedProjectId;
   const selectedProject = useMemo(
-    () => vlogProjects.find((project) => project.id === selectedProjectId) ?? null,
-    [vlogProjects, selectedProjectId]
+    () => vlogProjects.find((project) => project.id === currentVlogProjectId) ?? null,
+    [vlogProjects, currentVlogProjectId]
+  );
+
+  const renderProjectCards = () => (
+    <div className="mt-10 grid gap-6 md:grid-cols-6">
+      {projects.map((project) => (
+        <article key={project.title} className={`card reveal ${project.gridClass}`}>
+          <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">
+            <span>{project.type}</span>
+            <span className="project-metric">{project.metric}</span>
+          </div>
+          <div className="project-thumb" aria-hidden="true">
+            {project.thumbnail}
+          </div>
+          <h3 className="mt-4 text-xl font-bold">{project.title}</h3>
+          <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">{project.description}</p>
+          <ul className="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-300">
+            {project.highlights.map((item) => (
+              <li key={item}>- {item}</li>
+            ))}
+          </ul>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {project.stack.map((item) => (
+              <span key={item} className="tag">
+                {item}
+              </span>
+            ))}
+          </div>
+          <div className="mt-6 flex flex-wrap gap-3">
+            {project.links.live ? (
+              <a className="btn-secondary" href={project.links.live} target="_blank" rel="noreferrer">
+                Live
+              </a>
+            ) : (
+              <span className="btn-secondary btn-disabled" aria-disabled="true">
+                Live
+              </span>
+            )}
+            {project.links.code ? (
+              <a className="btn-secondary" href={project.links.code} target="_blank" rel="noreferrer">
+                Code
+              </a>
+            ) : (
+              <span className="btn-secondary btn-disabled" aria-disabled="true">
+                Code
+              </span>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
   );
 
   const createVlogProject = (event) => {
@@ -246,13 +315,64 @@ export default function App() {
 
     setVlogProjects((prev) => [newProject, ...prev]);
     setSelectedProjectId(newProject.id);
+    window.location.hash = `#/vlog/${encodeURIComponent(newProject.id)}`;
     setProjectName("");
     setProjectDescription("");
   };
 
+  const readFileAsDataUrl = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+  const addScreenshots = async (event) => {
+    const files = Array.from(event.target.files ?? []);
+    if (files.length === 0) return;
+
+    try {
+      const sources = await Promise.all(files.map((file) => readFileAsDataUrl(file)));
+      const images = sources.map((src, index) => ({
+        id: `img_${Date.now()}_${index}`,
+        src,
+        name: files[index].name,
+        placement: "center",
+      }));
+      setEntryScreenshots((prev) => [...prev, ...images]);
+    } catch {
+      // ignore invalid file read failures
+    } finally {
+      event.target.value = "";
+    }
+  };
+
+  const setScreenshotPlacement = (imageId, placement) => {
+    setEntryScreenshots((prev) =>
+      prev.map((image) => (image.id === imageId ? { ...image, placement } : image))
+    );
+  };
+
+  const moveScreenshot = (imageId, direction) => {
+    setEntryScreenshots((prev) => {
+      const index = prev.findIndex((img) => img.id === imageId);
+      if (index < 0) return prev;
+      const nextIndex = direction === "up" ? index - 1 : index + 1;
+      if (nextIndex < 0 || nextIndex >= prev.length) return prev;
+      const cloned = [...prev];
+      [cloned[index], cloned[nextIndex]] = [cloned[nextIndex], cloned[index]];
+      return cloned;
+    });
+  };
+
+  const removeScreenshot = (imageId) => {
+    setEntryScreenshots((prev) => prev.filter((img) => img.id !== imageId));
+  };
+
   const addVlogEntry = (event) => {
     event.preventDefault();
-    if (!selectedProjectId) return;
+    if (!currentVlogProjectId) return;
     const title = entryTitle.trim();
     const content = entryContent.trim();
     if (!title || !content) return;
@@ -261,21 +381,23 @@ export default function App() {
       id: `entry_${Date.now()}`,
       title,
       content,
+      images: entryScreenshots,
       createdAt: new Date().toISOString(),
     };
 
     setVlogProjects((prev) =>
       prev.map((project) =>
-        project.id === selectedProjectId
+        project.id === currentVlogProjectId
           ? { ...project, entries: [newEntry, ...project.entries] }
           : project
       )
     );
     setEntryTitle("");
     setEntryContent("");
+    setEntryScreenshots([]);
   };
 
-  if (route === "vlog") {
+  if (route.page === "vlog") {
     return (
       <div className="min-h-screen text-slate-900 dark:text-slate-100">
         <div className="pointer-events-none fixed inset-0 -z-10 bg-noise" />
@@ -307,98 +429,264 @@ export default function App() {
             </a>
           </div>
 
-          <section className="vlog-layout">
+          <section className="space-y-6">
             <div className="card">
-              <h2 className="text-lg font-bold">Create Project</h2>
-              <form className="mt-4 space-y-3" onSubmit={createVlogProject}>
+              <h2 className="text-lg font-bold">Create New Vlog Project</h2>
+              <form className="mt-4 grid gap-3 md:grid-cols-[1fr_1fr_auto]" onSubmit={createVlogProject}>
                 <input
                   className="vlog-input"
                   placeholder="Project name"
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
                 />
-                <textarea
-                  className="vlog-input min-h-[84px]"
-                  placeholder="Project description (optional)"
+                <input
+                  className="vlog-input"
+                  placeholder="Short description"
                   value={projectDescription}
                   onChange={(e) => setProjectDescription(e.target.value)}
                 />
                 <button className="btn-primary" type="submit">
-                  Create Project
+                  Create
                 </button>
               </form>
-
-              <h3 className="mt-8 text-sm font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
-                Your Projects
-              </h3>
-              <div className="mt-3 space-y-2">
-                {vlogProjects.map((project) => (
-                  <button
-                    key={project.id}
-                    type="button"
-                    className={`vlog-project-item ${project.id === selectedProjectId ? "is-active" : ""}`}
-                    onClick={() => setSelectedProjectId(project.id)}
-                  >
-                    <span className="block text-sm font-semibold">{project.name}</span>
-                    <span className="text-xs text-slate-500 dark:text-slate-400">
-                      {project.entries.length} vlog entries
-                    </span>
-                  </button>
-                ))}
-              </div>
             </div>
 
+            <div className="vlog-project-grid">
+              {vlogProjects.map((project) => (
+                <article key={project.id} className="card vlog-project-card">
+                  <h3 className="text-lg font-bold">{project.name}</h3>
+                  <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                    {project.description || "No description added yet."}
+                  </p>
+                  <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+                    {project.entries.length} entries
+                  </p>
+                  <div className="mt-4">
+                    <a className="btn-secondary" href={`#/vlog/${encodeURIComponent(project.id)}`}>
+                      Open Project Page
+                    </a>
+                  </div>
+                </article>
+              ))}
+              {vlogProjects.length === 0 && (
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  No projects yet. Create your first vlog project.
+                </p>
+              )}
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  if (route.page === "vlogProject") {
+    return (
+      <div className="min-h-screen text-slate-900 dark:text-slate-100">
+        <div className="pointer-events-none fixed inset-0 -z-10 bg-noise" />
+        <header className="site-header mx-auto w-full max-w-6xl px-4 py-5 sm:px-6">
+          <div className="header-top">
+            <a className="brand-link" href="#/">
+              <img className="logo-circle" src={logoSrc} alt="Karan Singh Gurjar logo" />
+              <span className="brand-mark">KSG</span>
+            </a>
+            <button
+              className="toggle-btn"
+              onClick={() =>
+                setThemeMode((prev) =>
+                  prev === "system" ? "dark" : prev === "dark" ? "light" : "system"
+                )
+              }
+              aria-label="Toggle theme"
+            >
+              {themeMode === "system" ? "Auto" : themeMode === "dark" ? "Dark" : "Light"}
+            </button>
+          </div>
+        </header>
+
+        <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
+          <div className="mb-6 flex items-center justify-between gap-3">
+            <h1 className="text-2xl font-bold md:text-4xl">
+              {selectedProject ? selectedProject.name : "Vlog Project"}
+            </h1>
+            <a className="btn-secondary" href="#/vlog">
+              Back to Vlog Projects
+            </a>
+          </div>
+
+          {!selectedProject ? (
             <div className="card">
-              <h2 className="text-lg font-bold">
-                {selectedProject ? `${selectedProject.name} - Vlog Entries` : "Select a project"}
-              </h2>
-              {selectedProject && (
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                Project not found. Please return to Vlog Projects and open an existing one.
+              </p>
+            </div>
+          ) : (
+            <section className="vlog-layout">
+              <div className="card">
+                <h2 className="text-lg font-bold">Add Vlog Entry</h2>
                 <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
                   {selectedProject.description || "No description added yet."}
                 </p>
-              )}
 
-              <form className="mt-5 space-y-3" onSubmit={addVlogEntry}>
-                <input
-                  className="vlog-input"
-                  placeholder="Vlog title"
-                  value={entryTitle}
-                  onChange={(e) => setEntryTitle(e.target.value)}
-                  disabled={!selectedProject}
-                />
-                <textarea
-                  className="vlog-input min-h-[120px]"
-                  placeholder="Write your vlog content..."
-                  value={entryContent}
-                  onChange={(e) => setEntryContent(e.target.value)}
-                  disabled={!selectedProject}
-                />
-                <button className="btn-primary" type="submit" disabled={!selectedProject}>
-                  Add Vlog Data
-                </button>
-              </form>
+                <form className="mt-5 space-y-3" onSubmit={addVlogEntry}>
+                  <input
+                    className="vlog-input"
+                    placeholder="Entry title"
+                    value={entryTitle}
+                    onChange={(e) => setEntryTitle(e.target.value)}
+                  />
+                  <textarea
+                    className="vlog-input min-h-[140px]"
+                    placeholder="Write vlog content..."
+                    value={entryContent}
+                    onChange={(e) => setEntryContent(e.target.value)}
+                  />
 
-              <div className="mt-7 space-y-4">
-                {selectedProject?.entries.length ? (
-                  selectedProject.entries.map((entry) => (
-                    <article key={entry.id} className="vlog-entry">
-                      <h3 className="text-base font-bold">{entry.title}</h3>
-                      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                        {new Date(entry.createdAt).toLocaleString()}
-                      </p>
-                      <p className="mt-3 whitespace-pre-wrap text-sm text-slate-700 dark:text-slate-300">
-                        {entry.content}
-                      </p>
-                    </article>
-                  ))
-                ) : (
-                  <p className="text-sm text-slate-500 dark:text-slate-400">
-                    No vlog data yet. Create a project and add your first entry.
-                  </p>
-                )}
+                  <div className="screenshot-upload-box">
+                    <label className="text-sm font-semibold">Add screenshots</label>
+                    <input
+                      className="mt-2 block w-full text-sm"
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={addScreenshots}
+                    />
+                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                      Upload multiple images, set placement, and reorder them.
+                    </p>
+                  </div>
+
+                  {entryScreenshots.length > 0 && (
+                    <div className="space-y-2">
+                      {entryScreenshots.map((image, index) => (
+                        <div key={image.id} className="screenshot-item">
+                          <img src={image.src} alt={image.name} className="screenshot-preview" />
+                          <div className="screenshot-controls">
+                            <p className="text-xs font-semibold">{image.name}</p>
+                            <select
+                              className="vlog-input"
+                              value={image.placement}
+                              onChange={(e) => setScreenshotPlacement(image.id, e.target.value)}
+                            >
+                              <option value="full">Full Width</option>
+                              <option value="center">Center</option>
+                              <option value="left">Left</option>
+                              <option value="right">Right</option>
+                            </select>
+                            <div className="flex gap-2">
+                              <button
+                                className="btn-secondary"
+                                type="button"
+                                onClick={() => moveScreenshot(image.id, "up")}
+                                disabled={index === 0}
+                              >
+                                Up
+                              </button>
+                              <button
+                                className="btn-secondary"
+                                type="button"
+                                onClick={() => moveScreenshot(image.id, "down")}
+                                disabled={index === entryScreenshots.length - 1}
+                              >
+                                Down
+                              </button>
+                              <button
+                                className="btn-secondary"
+                                type="button"
+                                onClick={() => removeScreenshot(image.id)}
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <button className="btn-primary" type="submit">
+                    Save Entry
+                  </button>
+                </form>
               </div>
-            </div>
-          </section>
+
+              <div className="card">
+                <h2 className="text-lg font-bold">All Entries</h2>
+                <div className="mt-6 space-y-5">
+                  {selectedProject.entries.length > 0 ? (
+                    selectedProject.entries.map((entry) => (
+                      <article key={entry.id} className="vlog-entry">
+                        <h3 className="text-base font-bold">{entry.title}</h3>
+                        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                          {new Date(entry.createdAt).toLocaleString()}
+                        </p>
+                        <p className="mt-3 whitespace-pre-wrap text-sm text-slate-700 dark:text-slate-300">
+                          {entry.content}
+                        </p>
+                        {entry.images?.length > 0 && (
+                          <div className="mt-4 space-y-3">
+                            {entry.images.map((image) => (
+                              <figure
+                                key={image.id}
+                                className={`vlog-media vlog-media-${image.placement || "center"}`}
+                              >
+                                <img src={image.src} alt={image.name || "Vlog screenshot"} />
+                              </figure>
+                            ))}
+                          </div>
+                        )}
+                      </article>
+                    ))
+                  ) : (
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      No entries yet. Add your first vlog entry here.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </section>
+          )}
+        </main>
+      </div>
+    );
+  }
+
+  if (route.page === "projects") {
+    return (
+      <div className="min-h-screen text-slate-900 dark:text-slate-100">
+        <div className="pointer-events-none fixed inset-0 -z-10 bg-noise" />
+        <header className="site-header mx-auto w-full max-w-6xl px-4 py-5 sm:px-6">
+          <div className="header-top">
+            <a className="brand-link" href="#/">
+              <img className="logo-circle" src={logoSrc} alt="Karan Singh Gurjar logo" />
+              <span className="brand-mark">KSG</span>
+            </a>
+            <button
+              className="toggle-btn"
+              onClick={() =>
+                setThemeMode((prev) =>
+                  prev === "system" ? "dark" : prev === "dark" ? "light" : "system"
+                )
+              }
+              aria-label="Toggle theme"
+            >
+              {themeMode === "system" ? "Auto" : themeMode === "dark" ? "Dark" : "Light"}
+            </button>
+          </div>
+        </header>
+
+        <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
+          <div className="mb-6 flex items-center justify-between gap-3">
+            <h1 className="text-3xl font-bold md:text-4xl">Projects</h1>
+            <a className="btn-secondary" href="#/">
+              Back to Portfolio
+            </a>
+          </div>
+          <p className="text-slate-600 dark:text-slate-300">
+            Biodiversity-focused bioacoustics research, secure systems, and product-ready
+            deliverables.
+          </p>
+          {renderProjectCards()}
         </main>
       </div>
     );
@@ -426,7 +714,7 @@ export default function App() {
           </button>
         </div>
         <nav className="nav-pill header-nav">
-          <a className={`nav-link ${activeSection === "projects" ? "is-active" : ""}`} href="#projects">
+          <a className={`nav-link ${route.page === "projects" ? "is-active" : ""}`} href="#/projects">
             Projects
           </a>
           <a
@@ -463,7 +751,7 @@ export default function App() {
               research, focused on building reliable and explainable systems.
             </p>
             <div className="hero-cta mt-8 flex flex-wrap items-center gap-3">
-              <a className="btn-primary" href="#projects">
+              <a className="btn-primary" href="#/projects">
                 View Projects
               </a>
               <a className="btn-secondary" href="#contact">
@@ -548,55 +836,7 @@ export default function App() {
               </p>
             </div>
           </div>
-          <div className="mt-10 grid gap-6 md:grid-cols-6">
-            {projects.map((project) => (
-              <article key={project.title} className={`card reveal ${project.gridClass}`}>
-                <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">
-                  <span>{project.type}</span>
-                  <span className="project-metric">{project.metric}</span>
-                </div>
-                <div className="project-thumb" aria-hidden="true">
-                  {project.thumbnail}
-                </div>
-                <h3 className="mt-4 text-xl font-bold">{project.title}</h3>
-                <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
-                  {project.description}
-                </p>
-                <ul className="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                  {project.highlights.map((item) => (
-                    <li key={item}>- {item}</li>
-                  ))}
-                </ul>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {project.stack.map((item) => (
-                    <span key={item} className="tag">
-                      {item}
-                    </span>
-                  ))}
-                </div>
-                <div className="mt-6 flex flex-wrap gap-3">
-                  {project.links.live ? (
-                    <a className="btn-secondary" href={project.links.live} target="_blank" rel="noreferrer">
-                      Live
-                    </a>
-                  ) : (
-                    <span className="btn-secondary btn-disabled" aria-disabled="true">
-                      Live
-                    </span>
-                  )}
-                  {project.links.code ? (
-                    <a className="btn-secondary" href={project.links.code} target="_blank" rel="noreferrer">
-                      Code
-                    </a>
-                  ) : (
-                    <span className="btn-secondary btn-disabled" aria-disabled="true">
-                      Code
-                    </span>
-                  )}
-                </div>
-              </article>
-            ))}
-          </div>
+          {renderProjectCards()}
         </section>
 
         <section id="experience" className="py-16 reveal">
@@ -722,7 +962,7 @@ export default function App() {
             <div>
               <h4 className="font-bold text-slate-900 dark:text-white">Quick Links</h4>
               <nav className="mt-4 flex flex-col gap-2 text-sm">
-                <a className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition" href="#projects">Projects</a>
+                <a className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition" href="#/projects">Projects</a>
                 <a className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition" href="#experience">Experience</a>
                 <a className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition" href="#skills">Skills</a>
                 <a className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition" href="#contact">Contact</a>
