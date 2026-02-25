@@ -238,9 +238,15 @@ export default function App() {
   }, [route.page, route.projectId]);
 
   useEffect(() => {
-    if (route.page !== "portfolio") {
-      document.querySelectorAll(".reveal").forEach((node) => node.classList.add("is-visible"));
+    if (route.page === "portfolio") {
+      setActiveSection("top");
+      window.scrollTo({ top: 0, behavior: "auto" });
+      window.requestAnimationFrame(() => {
+        document.querySelectorAll(".reveal").forEach((node) => node.classList.add("is-visible"));
+      });
+      return;
     }
+    document.querySelectorAll(".reveal").forEach((node) => node.classList.add("is-visible"));
   }, [route.page]);
 
   const year = useMemo(() => new Date().getFullYear(), []);
