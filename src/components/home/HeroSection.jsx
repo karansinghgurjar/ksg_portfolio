@@ -61,8 +61,8 @@ export default function HeroSection() {
           <div className="hero-profile-head">
             <div className="hero-identity">
               <img
-                src={getAssetPath("profile.webp")}
-                alt={`${siteConfig.name} portrait`}
+                src={getAssetPath("brand-logo.png")}
+                alt={`${siteConfig.name} logo`}
                 className="hero-photo"
               />
               <div>
