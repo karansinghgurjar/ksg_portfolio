@@ -12,7 +12,9 @@ export default function HeroSection() {
       aria-labelledby="hero-heading"
     >
       <div className="reveal">
-        <p className="section-kicker">{siteConfig.heroEyebrow}</p>
+        {siteConfig.heroEyebrow ? (
+          <p className="section-kicker">{siteConfig.heroEyebrow}</p>
+        ) : null}
         <h1 id="hero-heading" className="hero-title">
           {siteConfig.name}
         </h1>

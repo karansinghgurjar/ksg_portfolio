@@ -47,7 +47,7 @@ export const siteConfig = {
   linkedinUrl: "https://www.linkedin.com/in/karan-singh-gurjar-052b30197/",
   ogImage: "og-preview.jpg",
   certificateAsset: "etecom2025-certificate.pdf",
-  heroEyebrow: "Portfolio 2026",
+  heroEyebrow: "",
   heroRole: "AI/ML Engineer | Full Stack Developer | Research-Oriented Builder",
   heroTagline:
     "Builds intelligent products, research prototypes, and production-grade web systems.",
