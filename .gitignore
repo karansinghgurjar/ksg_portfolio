@@ -13,6 +13,13 @@ dist_local*
 dist-ssr
 *.local
 src/main.localbuild*.jsx
+src/style.localbuild*.css
+_write_test.tmp
+.static-local.log
+.static-local.err.log
+.vite-local.log
+.vite-local.err.log
+_video_frames/
 
 # Editor directories and files
 .vscode/*
