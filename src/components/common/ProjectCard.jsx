@@ -38,9 +38,9 @@ export default function ProjectCard({
       : project.homepageTags?.length
         ? project.homepageTags
         : project.techStack ?? [];
-  const detailLabel = isArchive ? "View Case Study" : "View Project";
-  const primaryActionHref = detailHref || project.liveUrl;
-  const primaryActionLabel = isArchive ? "View Case Study" : "View Project";
+  const detailLabel = "View Project";
+  const primaryActionHref = isArchive ? project.liveUrl : detailHref || project.liveUrl;
+  const primaryActionLabel = "View Project";
 
   return (
     <article
@@ -123,11 +123,7 @@ export default function ProjectCard({
         {primaryActionHref ? <ActionButton href={primaryActionHref} label={primaryActionLabel} /> : null}
         {githubHref ? <ActionButton href={githubHref} label="GitHub" /> : null}
         {isArchive ? <ActionButton href={project.codeUrl} label={project.actionLabels.code} /> : null}
-        {onSelect && isArchive ? (
-          <Button variant="tertiary" onClick={() => onSelect(project.slug)}>
-            {detailLabel}
-          </Button>
-        ) : detailHref && isFeaturedLarge ? (
+        {detailHref && isFeaturedLarge ? (
           <Button as="a" variant="tertiary" href={detailHref}>
             {detailLabel}
           </Button>
