@@ -49,11 +49,7 @@ export function useSeoMetadata(route) {
     const selectedProject = route.projectId ? findProjectByRouteId(projects, route.projectId) : null;
     const isProjects = route.page === "projects";
     const isProjectCaseStudy = Boolean(selectedProject);
-    const title = isProjectCaseStudy
-      ? `${selectedProject.title} | ${siteConfig.name}`
-      : isProjects
-        ? `Projects | ${siteConfig.name}`
-        : siteConfig.defaultTitle;
+    const title = siteConfig.shortName;
     const description = isProjectCaseStudy
       ? selectedProject.shortDescription
       : isProjects
