@@ -638,26 +638,7 @@ export const projects = [
           "The manuscript reports that auxiliary reconstruction guidance still contributes to output stability and quality.",
       },
     ],
-    qualitativeGallery: [
-      {
-        title: "SAR Input",
-        caption: "Placeholder for qualitative input examples used in the manuscript-style comparison.",
-        asset: "",
-        placeholder: "SAR Input",
-      },
-      {
-        title: "Baseline Comparison",
-        caption: "Placeholder for side-by-side visual comparison across baseline methods and the proposed model.",
-        asset: "",
-        placeholder: "Baseline Comparison",
-      },
-      {
-        title: "Proposed Output",
-        caption: "Placeholder for representative task-aware diffusion outputs from the manuscript evaluation.",
-        asset: "",
-        placeholder: "Proposed Output",
-      },
-    ],
+    qualitativeGallery: [],
     qualitativeOutputs: [
       {
         title: "SAR Input",
@@ -706,47 +687,7 @@ export const projects = [
       "Conditioning diffusion-based synthesis strongly enough to avoid visually plausible but task-irrelevant outputs.",
       "Framing the system as both a research contribution and a clear engineering architecture for recruiters to understand.",
     ],
-    media: {
-      coverImage: {
-        title: "Research Cover Visual",
-        caption: "Lead visual slot for SAR input, conditioning paths, and generated RGB output comparison.",
-        asset: "",
-        placeholder: "SAR-to-RGB Cover",
-      },
-      architectureDiagram: {
-        title: "Architecture Diagram",
-        caption: "Pipeline derived from the manuscript figure: SAR input through U-Net, Swin Transformer, semantic fusion, wavelet interaction, diffusion, and refinement.",
-        asset: "",
-        placeholder: "Pipeline Diagram",
-      },
-      screenshots: [
-        {
-          title: "SAR Input View",
-          caption: "Representative SAR input showing the low-level structure and interpretation challenge.",
-          asset: "",
-          placeholder: "SAR Input",
-        },
-        {
-          title: "Conditioning Inputs",
-          caption: "Land-cover and spectral conditioning paths used to guide downstream synthesis.",
-          asset: "",
-          placeholder: "Conditioning Paths",
-        },
-        {
-          title: "Generated RGB Output",
-          caption: "Model-generated RGB output intended to improve interpretability and usability.",
-          asset: "",
-          placeholder: "RGB Output",
-        },
-        {
-          title: "Comparison Panel",
-          caption: "Side-by-side comparison across SAR input, conditioning cues, and translated output.",
-          asset: "",
-          placeholder: "Comparison Panel",
-        },
-      ],
-      mockups: [],
-    },
+    media: {},
     notableReason:
       "AetherLink demonstrates the design of a full remote desktop system from the ground up, combining systems programming, networking, real-time streaming, and secure communication. Unlike typical application-level projects, it operates at a lower level of abstraction, highlighting expertise in protocol design, performance optimization, and cross-platform system architecture.",
     notableStatement:

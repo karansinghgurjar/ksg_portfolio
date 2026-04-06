@@ -75,6 +75,11 @@ export default function ProjectCaseStudyPage({ header, skipLink, projectSlug, se
   const media = project.media || {};
   const screenshotSlots = media.screenshots || [];
   const mockupSlots = media.mockups || [];
+  const hasMediaSection =
+    Boolean(media.coverImage) ||
+    Boolean(media.architectureDiagram) ||
+    screenshotSlots.length > 0 ||
+    mockupSlots.length > 0;
   const experimentalSetup = project.experimentalSetup || [];
   const methodologyCards = (project.methodologyCards || []).filter((item) => typeof item === "object");
   const resultsMetrics = project.resultsMetrics || [];
@@ -286,62 +291,64 @@ export default function ProjectCaseStudyPage({ header, skipLink, projectSlug, se
             )}
           </CaseStudyBlock>
 
-          <CaseStudyBlock id="media-heading" title="Product Visuals">
-            <div className="case-study-media-shell">
-              {media.coverImage ? (
-                <MediaSlot
-                  title={media.coverImage.title}
-                  caption={media.coverImage.caption}
-                  asset={media.coverImage.asset}
-                  placeholder={media.coverImage.placeholder}
-                  className="case-study-media-cover"
-                />
+          {hasMediaSection ? (
+            <CaseStudyBlock id="media-heading" title="Product Visuals">
+              <div className="case-study-media-shell">
+                {media.coverImage ? (
+                  <MediaSlot
+                    title={media.coverImage.title}
+                    caption={media.coverImage.caption}
+                    asset={media.coverImage.asset}
+                    placeholder={media.coverImage.placeholder}
+                    className="case-study-media-cover"
+                  />
+                ) : null}
+
+                {media.architectureDiagram ? (
+                  <MediaSlot
+                    title={media.architectureDiagram.title}
+                    caption={media.architectureDiagram.caption}
+                    asset={media.architectureDiagram.asset}
+                    placeholder={media.architectureDiagram.placeholder}
+                  />
+                ) : null}
+              </div>
+
+              {screenshotSlots.length ? (
+                <div className="case-study-screenshot-section">
+                  <p className="project-meta-label">Feature Screens</p>
+                  <div className="case-study-screenshot-grid">
+                    {screenshotSlots.map((item) => (
+                      <MediaSlot
+                        key={item.title}
+                        title={item.title}
+                        caption={item.caption}
+                        asset={item.asset}
+                        placeholder={item.placeholder}
+                      />
+                    ))}
+                  </div>
+                </div>
               ) : null}
 
-              {media.architectureDiagram ? (
-                <MediaSlot
-                  title={media.architectureDiagram.title}
-                  caption={media.architectureDiagram.caption}
-                  asset={media.architectureDiagram.asset}
-                  placeholder={media.architectureDiagram.placeholder}
-                />
+              {mockupSlots.length ? (
+                <div className="case-study-screenshot-section">
+                  <p className="project-meta-label">Desktop / Mobile Mockups</p>
+                  <div className="case-study-mockup-grid">
+                    {mockupSlots.map((item) => (
+                      <MediaSlot
+                        key={item.title}
+                        title={item.title}
+                        caption={item.caption}
+                        asset={item.asset}
+                        placeholder={item.placeholder}
+                      />
+                    ))}
+                  </div>
+                </div>
               ) : null}
-            </div>
-
-            {screenshotSlots.length ? (
-              <div className="case-study-screenshot-section">
-                <p className="project-meta-label">Feature Screens</p>
-                <div className="case-study-screenshot-grid">
-                  {screenshotSlots.map((item) => (
-                    <MediaSlot
-                      key={item.title}
-                      title={item.title}
-                      caption={item.caption}
-                      asset={item.asset}
-                      placeholder={item.placeholder}
-                    />
-                  ))}
-                </div>
-              </div>
-            ) : null}
-
-            {mockupSlots.length ? (
-              <div className="case-study-screenshot-section">
-                <p className="project-meta-label">Desktop / Mobile Mockups</p>
-                <div className="case-study-mockup-grid">
-                  {mockupSlots.map((item) => (
-                    <MediaSlot
-                      key={item.title}
-                      title={item.title}
-                      caption={item.caption}
-                      asset={item.asset}
-                      placeholder={item.placeholder}
-                    />
-                  ))}
-                </div>
-              </div>
-            ) : null}
-          </CaseStudyBlock>
+            </CaseStudyBlock>
+          ) : null}
 
           <CaseStudyBlock id="architecture-heading" title="Technical Architecture">
             <ul className="project-detail-list">
