@@ -2430,3 +2430,30 @@
     height: 52px;
   }
 }
+.logo-circle {
+  width: 3.5rem;
+  height: 3.5rem;
+  min-width: 3.5rem;
+  object-fit: cover;
+}
+
+.hero-photo {
+  width: 5.5rem;
+  height: 5.5rem;
+  min-width: 5.5rem;
+  object-fit: cover;
+}
+
+@media (max-width: 640px) {
+  .logo-circle {
+    width: 3.1rem;
+    height: 3.1rem;
+    min-width: 3.1rem;
+  }
+
+  .hero-photo {
+    width: 4.75rem;
+    height: 4.75rem;
+    min-width: 4.75rem;
+  }
+}
