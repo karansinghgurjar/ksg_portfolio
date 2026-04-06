@@ -639,26 +639,7 @@ export const projects = [
       },
     ],
     qualitativeGallery: [],
-    qualitativeOutputs: [
-      {
-        title: "SAR Input",
-        caption: "Representative SAR input sample used for qualitative visual comparison.",
-        asset: "",
-        placeholder: "SAR Input",
-      },
-      {
-        title: "Ground-Truth RGB",
-        caption: "Reference Sentinel-2 RGB target used as the qualitative comparison baseline.",
-        asset: "",
-        placeholder: "Ground-Truth RGB",
-      },
-      {
-        title: "Generated Output",
-        caption: "Model-generated RGB output from the proposed task-aware diffusion framework.",
-        asset: "",
-        placeholder: "Generated Output",
-      },
-    ],
+    qualitativeOutputs: [],
     architecture: [
       "SAR input is first processed by an Attention U-Net to extract local features and reduce speckle-heavy noise.",
       "A Swin Transformer encoder then models broader spatial context and long-range dependencies across the scene.",
