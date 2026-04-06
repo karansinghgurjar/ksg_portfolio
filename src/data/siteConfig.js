@@ -27,7 +27,7 @@ export const researchCopyRules = {
 
 export const siteConfig = {
   name: "Karan Singh Gurjar",
-  shortName: "KSG",
+  shortName: "Adhana",
   siteUrl: "https://karansinghgurjar.github.io/ksg_portfolio/",
   defaultTitle: "Karan Singh Gurjar | AI/ML Engineer | Full Stack Developer",
   defaultDescription:
