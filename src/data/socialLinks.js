@@ -2,7 +2,7 @@ export const socialLinks = [
   {
     label: "GitHub",
     href: "https://github.com/karansinghgurjar",
-    icon: "github.svg",
+    icon: "github.png",
   },
   {
     label: "LinkedIn",
