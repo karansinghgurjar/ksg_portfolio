@@ -1070,7 +1070,7 @@ export const projects = [
     role: "Full stack developer responsible for product implementation and deployment",
     duration: "Independent build",
     status: "Live Demo",
-    liveUrl: "https://vercel.com/karansingha2222-3708s-projects/v0-vault-box-project",
+    liveUrl: "",
     codeUrl: "",
     featured: true,
     metrics: ["Authentication flow", "Persistent secure storage", "Deployed app"],
