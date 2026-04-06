@@ -307,7 +307,7 @@ export const projects = [
     role: "Product designer, Android developer, and data capture workflow builder",
     duration: "Academic project",
     status: "Research Prototype",
-    liveUrl: "#/projects/sar-project?section=manuscript-note-heading",
+    liveUrl: "",
     codeUrl: "",
     featured: false,
     metrics: ["Behavioral biometrics", "On-device data capture", "Android prototype"],
