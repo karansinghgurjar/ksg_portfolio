@@ -41,7 +41,6 @@ export default function ProjectCard({
   const detailLabel = "View Project";
   const primaryActionHref = isArchive ? project.liveUrl : detailHref || project.liveUrl;
   const primaryActionLabel = "View Project";
-  const showDetailedArchiveLink = isArchive && project.slug === "sar-project" && detailHref;
 
   return (
     <article
@@ -124,11 +123,6 @@ export default function ProjectCard({
         {primaryActionHref ? <ActionButton href={primaryActionHref} label={primaryActionLabel} /> : null}
         {githubHref ? <ActionButton href={githubHref} label="GitHub" /> : null}
         {isArchive ? <ActionButton href={project.codeUrl} label={project.actionLabels.code} /> : null}
-        {showDetailedArchiveLink ? (
-          <Button as="a" variant="tertiary" href={detailHref}>
-            View Detailed Project
-          </Button>
-        ) : null}
         {detailHref && isFeaturedLarge ? (
           <Button as="a" variant="tertiary" href={detailHref}>
             {detailLabel}

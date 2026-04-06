@@ -15,6 +15,7 @@ export default function FeaturedProjectHeroCard({ project }) {
   const statusNote = project.homepageStatusNote || "Authored research work";
   const manuscriptHref = project.paperUrl || `#/projects/${project.slug}?section=manuscript-note-heading`;
   const visualAsset = project.media?.architectureDiagram?.asset || "";
+  const showCaseStudyButton = project.actions?.caseStudy ?? true;
 
   return (
     <article className="featured-project-hero-card">
@@ -46,9 +47,11 @@ export default function FeaturedProjectHeroCard({ project }) {
         </div>
 
         <div className="featured-project-actions">
-          <Button as="a" href={`#/projects/${project.slug}`}>
-            View Case Study
-          </Button>
+          {showCaseStudyButton ? (
+            <Button as="a" href={`#/projects/${project.slug}`}>
+              View Case Study
+            </Button>
+          ) : null}
           <Button as="a" variant="tertiary" href={manuscriptHref}>
             Paper Summary
           </Button>

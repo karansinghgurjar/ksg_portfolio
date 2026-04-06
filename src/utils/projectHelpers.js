@@ -22,6 +22,9 @@ export function getArchiveCategory(project) {
 
 export function findProjectByRouteId(projects = [], routeId = "") {
   if (!routeId) return null;
+  if (routeId === "sar-project" || routeId === "avian-vocalization-classification") {
+    return null;
+  }
 
   return (
     projects.find((project) => project.slug === routeId || project.id === routeId) ||

@@ -345,7 +345,7 @@ export const projects = [
     homepagePriority: 120,
     signature: true,
     actions: {
-      caseStudy: true,
+      caseStudy: false,
       github: false,
       paper: true,
       liveDemo: false,
