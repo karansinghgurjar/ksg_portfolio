@@ -47,7 +47,7 @@ export default function Header({
           >
             <img
               className="logo-circle"
-              src={getAssetPath("logo-mark.webp")}
+              src={getAssetPath("brand-logo.png")}
               alt={`${siteConfig.name} logo`}
             />
             <span className="brand-mark">{siteConfig.shortName}</span>

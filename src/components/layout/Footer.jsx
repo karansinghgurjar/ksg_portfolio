@@ -15,7 +15,7 @@ export default function Footer() {
             <a className="flex items-center gap-3 text-lg font-bold" href="#top">
               <img
                 className="logo-circle"
-                src={getAssetPath("logo-mark.webp")}
+                src={getAssetPath("brand-logo.png")}
                 alt={`${siteConfig.name} logo`}
               />
               <span>{siteConfig.shortName}</span>
